@@ -4,6 +4,11 @@ import { X, YoutubeLogo, Play, CheckCircle } from "@phosphor-icons/react";
 import { CONTACT_CONFIG } from "../data/content";
 
 export function VideoTheaterModal({ episode, onClose, copy, isRtl }) {
+  const youtubeMatch = episode?.youtubeId?.match(
+    /(?:v=|youtu\.be\/|shorts\/|embed\/)?([a-zA-Z0-9_-]{11})/
+  );
+  const embedId = youtubeMatch ? youtubeMatch[1] : "";
+
   useEffect(() => {
     function handleKey(e) {
       if (e.key === "Escape") onClose();
@@ -51,10 +56,10 @@ export function VideoTheaterModal({ episode, onClose, copy, isRtl }) {
 
             {/* Video Player or Styled Placeholder */}
             <div className="relative aspect-video w-full bg-[#0A0B0D]">
-              {episode.youtubeId ? (
+              {embedId ? (
                 <iframe
                   className="h-full w-full"
-                  src={`https://www.youtube.com/embed/${episode.youtubeId}?autoplay=1`}
+                  src={`https://www.youtube.com/embed/${embedId}?autoplay=1`}
                   title={episode.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

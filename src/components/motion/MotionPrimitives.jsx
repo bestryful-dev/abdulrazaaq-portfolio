@@ -42,7 +42,7 @@ export function BlurFade({ children, delay = 0, yOffset = 18, className = "" }) 
     <motion.div
       initial={{ opacity: 0, y: yOffset, filter: "blur(8px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: false, margin: "-60px" }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{
         duration: 0.65,
         delay,
@@ -180,19 +180,16 @@ export function MagneticButton({ children, className = "", onClick, type = "butt
  */
 export function NumberTicker({ value, decimals = 0, prefix = "", suffix = "" }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const inView = useInView(ref, { once: false, margin: "-40px" });
   const [displayValue, setDisplayValue] = useState(0);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!inView) return;
-    if (shouldReduceMotion) {
-      setDisplayValue(value);
-      return;
-    }
+    if (!inView || shouldReduceMotion) return;
 
     let startTime = null;
     const duration = 1200;
+    let frameId;
 
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
@@ -201,17 +198,18 @@ export function NumberTicker({ value, decimals = 0, prefix = "", suffix = "" }) 
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplayValue(eased * value);
       if (progress < 1) {
-        requestAnimationFrame(step);
+        frameId = requestAnimationFrame(step);
       } else {
         setDisplayValue(value);
       }
     }
 
-    const frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
+    frameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frameId);
   }, [inView, value, shouldReduceMotion]);
 
-  const formatted = decimals > 0 ? displayValue.toFixed(decimals) : Math.round(displayValue);
+  const activeValue = shouldReduceMotion ? value : displayValue;
+  const formatted = decimals > 0 ? activeValue.toFixed(decimals) : Math.round(activeValue);
 
   return (
     <span ref={ref} dir="ltr" className="inline-block tabular-nums">

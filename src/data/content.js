@@ -2,7 +2,7 @@ export const CONTACT_CONFIG = {
   whatsappUrl: "https://wa.me/966500000000", // Abdulrazaaq's WhatsApp (update when ready)
   email: "contact@abdulrazaaq.com",
   youtubeChannelUrl: "https://www.youtube.com/@trendcommerce",
-  facebookUrl: "https://www.facebook.com/",
+  facebookUrl: "https://www.facebook.com/abdulrazaaq.nasser",
   portraitImage: "/portrait.jpg", // Save his photo as public/portrait.jpg
   journeyImage: "/journey.png",
 
